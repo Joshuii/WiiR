@@ -263,17 +263,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   PlayerCamera: {fileID: 1152761995}
-  MovementSpeed: 5
   Move:
     m_Name: Move
     m_Type: 0
     m_ExpectedControlType: 
-    m_Id: 20e45693-0e7e-4f53-8fe8-43fcbcb9742c
+    m_Id: b028ab6c-16d5-44b4-bc02-1d91ab0af91e
     m_Processors: 
     m_Interactions: 
     m_SingletonActionBindings:
     - m_Name: 2D Vector
-      m_Id: 9e4a3869-6e7a-44e6-941a-ecb65cc615ed
+      m_Id: b8be5e92-ce95-4aab-b58a-d6972d12a4ef
       m_Path: 2DVector
       m_Interactions: 
       m_Processors: 
@@ -281,7 +280,7 @@ MonoBehaviour:
       m_Action: Move
       m_Flags: 4
     - m_Name: up
-      m_Id: 629683e3-9e54-483c-8598-0480176f3c1c
+      m_Id: a80fe9e9-486f-4cda-932f-1af8b5a98495
       m_Path: <Keyboard>/w
       m_Interactions: 
       m_Processors: 
@@ -289,7 +288,7 @@ MonoBehaviour:
       m_Action: Move
       m_Flags: 8
     - m_Name: down
-      m_Id: c3096937-79d9-4753-b4c4-fd8f8deae0ca
+      m_Id: d6e95096-a3d1-4502-9600-3fd30d0767b3
       m_Path: <Keyboard>/s
       m_Interactions: 
       m_Processors: 
@@ -297,7 +296,7 @@ MonoBehaviour:
       m_Action: Move
       m_Flags: 8
     - m_Name: left
-      m_Id: 5ac551d7-e226-467e-a43e-1a23caf79a27
+      m_Id: 223c007a-8914-4b03-a5f4-106e667f045f
       m_Path: <Keyboard>/a
       m_Interactions: 
       m_Processors: 
@@ -305,7 +304,7 @@ MonoBehaviour:
       m_Action: Move
       m_Flags: 8
     - m_Name: right
-      m_Id: fc5ee182-3813-46e7-a63f-94743da3f838
+      m_Id: 6293798a-cbff-4725-82d1-6f2c08e5f769
       m_Path: <Keyboard>/d
       m_Interactions: 
       m_Processors: 
@@ -313,6 +312,7 @@ MonoBehaviour:
       m_Action: Move
       m_Flags: 8
     m_Flags: 0
+  MovementSpeed: 5
 --- !u!1 &1152761993
 GameObject:
   m_ObjectHideFlags: 0
