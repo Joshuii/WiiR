@@ -43,11 +43,12 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Vector2 input = Move.ReadValue<Vector2>().normalized;
-        Vector2 headVelocity = input * MovementSpeed * Time.deltaTime;
-        HeadPosition += new Vector3(headVelocity.x, 0, headVelocity.y);
+        //Vector2 input = Move.ReadValue<Vector2>().normalized;
+        //Vector2 headVelocity = input * MovementSpeed * Time.deltaTime;
+        //HeadPosition += new Vector3(headVelocity.x, 0, headVelocity.y);
 
         UpdateHeadPosition();
+        transform.position = new Vector3(-HeadPosition.x, HeadPosition.y, -HeadPosition.z);
     }
 
     private void UpdateHeadPosition()
@@ -75,21 +76,22 @@ public class Player : MonoBehaviour
             Vector2 delta = points[0] - points[1];
             Vector2 centerPoint = (points[0] + points[1]) / 2f;
             float pointDistance = Mathf.Sqrt(delta.sqrMagnitude);
-            float radiansPerPixel = (Mathf.PI / 4f) / 1024f;
+            //float radiansPerPixel = (Mathf.Deg2Rad * 33f) / 1024f;
+            float radiansPerPixel = (Mathf.PI / 8f) / 1024f;
             float angle = radiansPerPixel * (pointDistance / 2f);
-            float sensorBarWidth = 200f;
-            float headZ = HeadMovementSpeed * ((sensorBarWidth / 2f) / Mathf.Tan(angle)) / ScreenHeightMM;
-            float headX = HeadMovementSpeed * Mathf.Sin(radiansPerPixel * (centerPoint.x - 512f)) * headZ;
+            //float sensorBarWidth = 200f;
+            float sensorBarWidth = 8.5f * 25.4f;
+            HeadPosition.z = HeadMovementSpeed * ((sensorBarWidth / 2f) / Mathf.Tan(angle)) / ScreenHeightMM;
+            HeadPosition.x = HeadMovementSpeed * Mathf.Sin(radiansPerPixel * (centerPoint.x - 512f)) * HeadPosition.z;
             float relativeVerticalAngle = (centerPoint.y - 384f) * radiansPerPixel;
-            float headY = -0.5f + (HeadMovementSpeed * Mathf.Sin(relativeVerticalAngle + 0f) * headZ);
-            Debug.Log($"X: {headX}, Y: {headY}, Z: {headZ}");
-            Camera.transform.position = new Vector3(-headX, headY, -headZ);
+            HeadPosition.y = -0.5f + (HeadMovementSpeed * Mathf.Sin(relativeVerticalAngle + (Mathf.Deg2Rad * 10f)) * HeadPosition.z);
+            Debug.Log($"X: {HeadPosition.x}, Y: {HeadPosition.y}, Z: {HeadPosition.z}");
         }
     }
 
     private void LateUpdate()
     {
-        CalculateProjectionMatrix(Camera.nearClipPlane, Camera.farClipPlane);
+        //CalculateProjectionMatrix(Camera.nearClipPlane, Camera.farClipPlane);
     }
 
     private void CalculateProjectionMatrix(float nearDistance, float farDistance)
@@ -109,44 +111,18 @@ public class Player : MonoBehaviour
         Vector3 vn = -Vector3.Cross(vr, vu).normalized;
 
         // Distance from the screen to eye
-        float eyeDistance = -Vector3.Dot(vn, va);
+        float eyeDistance = Camera.transform.position.magnitude;
 
-        //Debug.Log(vn);
-        //Debug.Log(va);
-        //Debug.Log(vb);
-        //Debug.Log(vc);
-        //Debug.Log(Camera.transform.position);
         Debug.Log(eyeDistance);
 
-        float left   = Vector3.Dot(vr, va) * (nearDistance / eyeDistance);
-        float right  = Vector3.Dot(vr, vb) * (nearDistance / eyeDistance);
+        float left = Vector3.Dot(vr, va) * (nearDistance / eyeDistance);
+        float right = Vector3.Dot(vr, vb) * (nearDistance / eyeDistance);
         float bottom = Vector3.Dot(vu, va) * (nearDistance / eyeDistance);
-        float top    = Vector3.Dot(vu, vc) * (nearDistance / eyeDistance);
+        float top = Vector3.Dot(vu, vc) * (nearDistance / eyeDistance);
 
         Matrix4x4 projection = Matrix4x4.Frustum(left, right, bottom, top, nearDistance, farDistance);
-        //Matrix4x4 projection = new Matrix4x4();
-        //projection[0, 0] = 2.0f * nearDistance / (right - left);
-        //projection[0, 1] = 0;
-        //projection[0, 2] = (right + left) / (right - left);
-        //projection[0, 3] = 0;
 
-        //projection[1, 0] = 0;
-        //projection[1, 1] = 2.0f * nearDistance / (top - bottom);
-        //projection[1, 2] = (top + bottom) / (top - bottom);
-        //projection[1, 3] = 0;
-
-        //projection[2, 0] = 0;
-        //projection[2, 1] = 0;
-        //projection[2, 2] = -(farDistance + nearDistance) / (farDistance - nearDistance);
-        //projection[2, 3] = -2.0f * farDistance * nearDistance / (farDistance - nearDistance);
-
-        //projection[3, 0] = 0;
-        //projection[3, 1] = 0;
-        //projection[3, 2] = -1;
-        //projection[3, 3] = 0;
-
-
-        Matrix4x4 transformation = new Matrix4x4();
+        Matrix4x4 transformation = new();
         transformation[0, 0] = vr.x;
         transformation[0, 1] = vr.y;
         transformation[0, 2] = vr.z;
@@ -167,7 +143,7 @@ public class Player : MonoBehaviour
         transformation[3, 2] = 0;
         transformation[3, 3] = 1;
 
-        Matrix4x4 camera = new Matrix4x4();
+        Matrix4x4 camera = new();
         camera[0, 0] = 1;
         camera[0, 1] = 0;
         camera[0, 2] = 0;
@@ -188,18 +164,11 @@ public class Player : MonoBehaviour
         camera[3, 2] = -Camera.transform.position.z;
         camera[3, 3] = 1;
 
-
-        Vector3 T = -Camera.transform.position;
-
-
-
         Camera.worldToCameraMatrix =
             transformation *
             Matrix4x4.Rotate(Quaternion.Inverse(Camera.transform.rotation)) *
             Matrix4x4.Translate(-Camera.transform.position);
         Camera.projectionMatrix = projection;
-
-        //return Matrix4x4.identity * projection * transformation * camera;
     }
 
     private void OnDrawGizmos()
