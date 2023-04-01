@@ -19,31 +19,53 @@ public class AnaglyphCamera : MonoBehaviour
 
     private Material anaglyphMaterial;
 
+    private bool anaglyphEnabled = true;
+
     private void Awake()
     {
         anaglyphMaterial = new Material(Resources.Load<Shader>("Shaders/Anaglyph"));
     }
 
+    private void Update()
+    {
+        if (Input.GetKeyUp(KeyCode.Tab))
+        {
+            anaglyphEnabled = !anaglyphEnabled;
+        }
+    }
+
     private void OnRenderImage(RenderTexture src, RenderTexture dst)
     {
-        RenderTexture texture1 = RenderTexture.GetTemporary(src.descriptor);
-        RenderTexture texture2 = RenderTexture.GetTemporary(src.descriptor);
+        if (anaglyphEnabled)
+        {
+            RenderTexture leftTexture = RenderTexture.GetTemporary(src.descriptor);
+            RenderTexture rightTexture = RenderTexture.GetTemporary(src.descriptor);
 
-        // Left eye
-        CalculateProjectionMatrix(Vector3.left * 0.02f, Camera.nearClipPlane, Camera.farClipPlane);
-        Camera.targetTexture = texture1;
-        Camera.Render();
-        anaglyphMaterial.SetTexture("_LeftTex", texture1);
+            // Left eye
+            CalculateProjectionMatrix(Vector3.left * 0.02f, Camera.nearClipPlane, Camera.farClipPlane);
+            Camera.targetTexture = leftTexture;
+            Camera.Render();
+            anaglyphMaterial.SetTexture("_LeftTex", leftTexture);
 
-        // Right eye
-        CalculateProjectionMatrix(Vector3.right * 0.02f, Camera.nearClipPlane, Camera.farClipPlane);
-        Camera.targetTexture = texture2;
-        Camera.Render();
-        anaglyphMaterial.SetTexture("_RightTex", texture2);
+            // Right eye
+            CalculateProjectionMatrix(Vector3.right * 0.02f, Camera.nearClipPlane, Camera.farClipPlane);
+            Camera.targetTexture = rightTexture;
+            Camera.Render();
+            anaglyphMaterial.SetTexture("_RightTex", rightTexture);
 
-        Graphics.Blit(src, dst, anaglyphMaterial);
-        RenderTexture.ReleaseTemporary(texture1);
-        RenderTexture.ReleaseTemporary(texture2);
+            Graphics.Blit(src, dst, anaglyphMaterial);
+            RenderTexture.ReleaseTemporary(leftTexture);
+            RenderTexture.ReleaseTemporary(rightTexture);
+        }
+        else
+        {
+            RenderTexture texture = RenderTexture.GetTemporary(src.descriptor);
+            CalculateProjectionMatrix(Vector3.zero, Camera.nearClipPlane, Camera.farClipPlane);
+            Camera.targetTexture = texture;
+            Camera.Render();
+            Graphics.Blit(texture, dst);
+            RenderTexture.ReleaseTemporary(texture);
+        }
     }
 
     private void CalculateProjectionMatrix(Vector3 offset, float nearDistance, float farDistance)
