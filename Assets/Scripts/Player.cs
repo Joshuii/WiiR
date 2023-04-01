@@ -1,13 +1,15 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class PlayerController : MonoBehaviour {
+public class Player : MonoBehaviour {
 
-    [SerializeField] private Camera PlayerCamera;
+    [SerializeField]
+    private Camera PlayerCamera;
+
+    [SerializeField]
+    private float MovementSpeed;
 
     public InputAction Move;
-
-    [SerializeField] private float MovementSpeed;
 
     private Vector3 HeadPosition = Vector3.up;
 
