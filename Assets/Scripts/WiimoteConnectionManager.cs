@@ -6,33 +6,50 @@ using WiimoteApi;
 public class WiimoteConnectionManager : MonoBehaviour
 {
     public Wiimote HeadWiimote;
+    public Wiimote HandWiimote;
 
-    // Start is called before the first frame update
     void Awake()
     {
         WiimoteManager.FindWiimotes();
-        if (WiimoteManager.Wiimotes.Count == 0)
-        {
-            Debug.LogWarning("No wiimotes found");
-            return;
-        }
-        HeadWiimote = WiimoteManager.Wiimotes[0];
-        HeadWiimote.SetupIRCamera(IRDataType.EXTENDED);
-        HeadWiimote.SendPlayerLED(true, false, false, true);
+        HeadWiimote = SetupWiimote(0, true, false, false, true);
+        HandWiimote = SetupWiimote(1, false, true, true, false);
     }
 
-    // Update is called once per frame
+    private Wiimote SetupWiimote(int index, bool led1, bool led2, bool led3, bool led4)
+    {
+        if (WiimoteManager.Wiimotes.Count <= index)
+        {
+            Debug.LogWarning("Not enough Wiimotes");
+            return null;
+        }
+
+        Wiimote wiimote = WiimoteManager.Wiimotes[index];
+        wiimote.SetupIRCamera(IRDataType.EXTENDED);
+        wiimote.SendPlayerLED(led1, led2, led3, led4);
+        return wiimote;
+    }
+
     void Update()
     {
-        int ret = 0;
-        do
+        UpdateWiimote(HeadWiimote);
+        UpdateWiimote(HandWiimote);
+    }
+
+    private void UpdateWiimote(Wiimote wiimote)
+    {
+        if (wiimote != null)
         {
-            HeadWiimote.ReadWiimoteData();
-        } while (ret > 0);
+            int ret;
+            do
+            {
+                ret = wiimote.ReadWiimoteData();
+            } while (ret > 0);
+        }
     }
 
     private void OnDestroy()
     {
-        WiimoteManager.Cleanup(HeadWiimote);
+        if (HeadWiimote != null) WiimoteManager.Cleanup(HeadWiimote);
+        if (HandWiimote != null) WiimoteManager.Cleanup(HandWiimote);
     }
 }
