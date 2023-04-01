@@ -8,7 +8,7 @@ public class WiimoteConnectionManager : MonoBehaviour
     public Wiimote HeadWiimote;
 
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         WiimoteManager.FindWiimotes();
         if (WiimoteManager.Wiimotes.Count == 0)
@@ -18,6 +18,7 @@ public class WiimoteConnectionManager : MonoBehaviour
         }
         HeadWiimote = WiimoteManager.Wiimotes[0];
         HeadWiimote.SetupIRCamera(IRDataType.EXTENDED);
+        HeadWiimote.SendPlayerLED(true, false, false, true);
     }
 
     // Update is called once per frame
@@ -28,7 +29,6 @@ public class WiimoteConnectionManager : MonoBehaviour
         {
             HeadWiimote.ReadWiimoteData();
         } while (ret > 0);
-        Debug.Log(HeadWiimote.Button.a);
     }
 
     private void OnDestroy()
