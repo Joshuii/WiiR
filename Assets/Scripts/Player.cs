@@ -5,13 +5,13 @@ public class Player : MonoBehaviour
 {
 
     [SerializeField]
-    private Camera camera;
+    private Camera Camera;
 
     [SerializeField]
     private float MovementSpeed;
 
     [SerializeField]
-    private float screenHeight;
+    private float ScreenHeight;
 
     public InputAction Move;
 
@@ -37,7 +37,8 @@ public class Player : MonoBehaviour
 
     private void OnDrawGizmos()
     {
-        Debug.Log("Gizmos!");
+        Gizmos.color = Color.red;
+        Gizmos.DrawLine(new Vector3(0, 0, 0), new Vector3(1, 1, 1));
     }
 
     private void OnEnable()
