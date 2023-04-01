@@ -47,9 +47,15 @@ public class Player : MonoBehaviour
         Vector2 headVelocity = input * MovementSpeed * Time.deltaTime;
         HeadPosition += new Vector3(headVelocity.x, 0, headVelocity.y);
 
-        //transform.position = HeadPosition;
+        UpdateHeadPosition();
+    }
 
-        //camera.projectionMatrix;
+    private void UpdateHeadPosition()
+    {
+        if (ConnectionManager.HeadWiimote == null)
+        {
+            return;
+        }
 
         List<Vector2> points = new();
         ReadOnlyMatrix<int> ir = ConnectionManager.HeadWiimote.Ir.ir;
@@ -77,13 +83,13 @@ public class Player : MonoBehaviour
             float relativeVerticalAngle = (centerPoint.y - 384f) * radiansPerPixel;
             float headY = -0.5f + (HeadMovementSpeed * Mathf.Sin(relativeVerticalAngle + 0f) * headZ);
             Debug.Log($"X: {headX}, Y: {headY}, Z: {headZ}");
+            Camera.transform.position = new Vector3(-headX, headY, -headZ);
         }
-        //Matrix4x4 projectionMatrix = CalculateProjectionMatrix(Camera.nearClipPlane, Camera.farClipPlane);
+    }
 
+    private void LateUpdate()
+    {
         CalculateProjectionMatrix(Camera.nearClipPlane, Camera.farClipPlane);
-        //Matrix4x4 matrix = CalculateProjectionMatrix(Camera.nearClipPlane, Camera.farClipPlane);
-        //Debug.Log(matrix);
-        //Camera.projectionMatrix = matrix;
     }
 
     private void CalculateProjectionMatrix(float nearDistance, float farDistance)
