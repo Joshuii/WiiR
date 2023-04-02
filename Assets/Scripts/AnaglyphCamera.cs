@@ -41,13 +41,13 @@ public class AnaglyphCamera : MonoBehaviour
             RenderTexture rightTexture = RenderTexture.GetTemporary(src.descriptor);
 
             // Left eye
-            CalculateProjectionMatrix(Vector3.left * 0.02f);
+            CalculateProjectionMatrix(Vector3.left * 0.1f);
             Camera.targetTexture = leftTexture;
             Camera.Render();
             anaglyphMaterial.SetTexture("_LeftTex", leftTexture);
 
             // Right eye
-            CalculateProjectionMatrix(Vector3.right * 0.02f);
+            CalculateProjectionMatrix(Vector3.right * 0.1f);
             Camera.targetTexture = rightTexture;
             Camera.Render();
             anaglyphMaterial.SetTexture("_RightTex", rightTexture);
@@ -121,7 +121,7 @@ public class AnaglyphCamera : MonoBehaviour
         Camera.worldToCameraMatrix =
             transformation *
             Matrix4x4.Rotate(Quaternion.Inverse(Camera.transform.rotation)) *
-            Matrix4x4.Translate(-Camera.transform.position);
+            Matrix4x4.Translate(-eyePosition);
         Camera.projectionMatrix = projection;
     }
 

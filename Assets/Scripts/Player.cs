@@ -28,6 +28,8 @@ public class Player : MonoBehaviour
 
     private Vector3 HeadPosition = Vector3.up;
 
+    private bool standingMode = false;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -41,9 +43,14 @@ public class Player : MonoBehaviour
         //Vector2 headVelocity = input * MovementSpeed * Time.deltaTime;
         //HeadPosition += new Vector3(headVelocity.x, 0, headVelocity.y);
 
+        if (Input.GetKeyUp(KeyCode.Q))
+        {
+            standingMode = !standingMode;
+        }
+
         UpdateGunPosition();
         UpdateHeadPosition();
-        transform.position = new Vector3(-HeadPosition.x, HeadPosition.y, -HeadPosition.z);
+        transform.position = new Vector3(HeadPosition.x * (standingMode ? 1 : -1), HeadPosition.y, -HeadPosition.z);
     }
 
     private void UpdateHeadPosition()
@@ -100,7 +107,7 @@ public class Player : MonoBehaviour
         }
 
         anaglyphCamera.CalculateProjectionMatrix(Vector3.zero);
-        screenPoint = Vector3.Lerp(screenPoint, anaglyphCamera.Camera.ViewportToScreenPoint(pointerPosition), 0.5f);
+        screenPoint = Vector3.Lerp(screenPoint, anaglyphCamera.Camera.ViewportToScreenPoint(pointerPosition), 0.9f);
         Ray ray = anaglyphCamera.Camera.ScreenPointToRay(screenPoint);
         crosshair.position = screenPoint;
 
