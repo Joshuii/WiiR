@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657868, g: 0.49641263, b: 0.57481706, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657826, g: 0.49641263, b: 0.57481676, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -736,7 +736,7 @@ MonoBehaviour:
   LengthPerSegment: 200
   GapBetweenSegments: 100
   Segments:
-  - {fileID: 9143709877199262168, guid: 279832c7779ed9a4185093d16973f74f, type: 3}
+  - {fileID: 1794499098106485905, guid: 9e483efb2f072f44fa51fc2feb90a26b, type: 3}
 --- !u!1 &989408891
 GameObject:
   m_ObjectHideFlags: 0
