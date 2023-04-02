@@ -736,7 +736,7 @@ MonoBehaviour:
   LengthPerSegment: 200
   GapBetweenSegments: 100
   Segments:
-  - {fileID: 1031911099463274479, guid: cbca6c8e90a80f04596defdd277f6938, type: 3}
+  - {fileID: 4910608052249308099, guid: c7434ddfb979be540986cbc517aa9703, type: 3}
 --- !u!1 &989408891
 GameObject:
   m_ObjectHideFlags: 0
