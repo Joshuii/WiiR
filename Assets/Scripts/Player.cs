@@ -27,6 +27,9 @@ public class Player : MonoBehaviour
     [SerializeField]
     private GameObject bulletPrefab;
 
+    [SerializeField]
+    private AudioSource glassSmash;
+
     private Vector3 screenPoint;
     private bool aPressed = false;
 
@@ -124,6 +127,7 @@ public class Player : MonoBehaviour
 
             if (Physics.SphereCast(ray, 0.05f, out RaycastHit hit))
             {
+                glassSmash.Play();
                 float distance = (hit.point - ray.origin).magnitude;
                 Destroy(bullet, distance / bullet.GetComponent<Bullet>().Speed / 5);
 
