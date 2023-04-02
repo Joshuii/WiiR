@@ -110,7 +110,7 @@ public class Player : MonoBehaviour
             return;
         }
 
-        anaglyphCamera.CalculateProjectionMatrix(Vector3.zero);
+        anaglyphCamera.CalculateProjectionMatrix(Vector3.right * 0.1f);
         screenPoint = Vector3.Lerp(screenPoint, anaglyphCamera.Camera.ViewportToScreenPoint(pointerPosition), 0.9f);
         Ray ray = anaglyphCamera.Camera.ScreenPointToRay(screenPoint);
         crosshair.position = screenPoint;
