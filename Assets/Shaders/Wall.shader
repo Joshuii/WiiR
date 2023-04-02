@@ -10,6 +10,8 @@ Shader "Custom/Wall"
         _LineSpacing ("Line Spacing", Range(0, 10)) = 1.0
         _NearLineColour ("Near Line Colour", Color) = (0.5,0.5,0.5,1)
         _FarLineColour ("Far Line Colour", Color) = (0.5,0.5,0.5,1)
+
+        _LineSpeed ("Line Speed", Range(0,1)) = 1.0
     }
     SubShader
     {
@@ -37,6 +39,9 @@ Shader "Custom/Wall"
         half _LineSpacing;
         fixed4 _NearLineColour;
         fixed4 _FarLineColour;
+        float _LineSpeed;
+
+        float distance;
 
         // Add instancing support for this shader. You need to check 'Enable Instancing' on materials that use the shader.
         // See https://docs.unity3d.com/Manual/GPUInstancing.html for more information about instancing.
@@ -49,9 +54,9 @@ Shader "Custom/Wall"
         {
             // Albedo comes from a texture tinted by color
             float position = IN.worldPos.z;
-            float grid = pow(position * _LineSpacing % 1, 10);
-            float lineColour = _NearLineColour * (2 - position * 0.5) + _FarLineColour * position * 0.5;
-            float gridColour = _Colour * (1 - grid) + lineColour * grid;
+            float grid = pow((position + distance * _LineSpeed) * _LineSpacing % 1, 10);
+            float4 lineColour = _NearLineColour * (10 - position * 0.1) + _FarLineColour * position * 0.1;
+            float4 gridColour = _Colour * (1 - grid) + lineColour * grid;
             o.Albedo = gridColour;
 
             // Metallic and smoothness come from slider variables
