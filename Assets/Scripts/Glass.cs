@@ -23,16 +23,9 @@ public class Glass : MonoBehaviour
 
         foreach (Transform child in transform)
         {
-            if (child.gameObject.activeSelf)
-            {
-                child.gameObject.SetActive(false);
-            }
-            else
-            {
-                child.gameObject.SetActive(true);
-                Rigidbody rb = child.AddComponent<Rigidbody>();
-                rb.AddForce(100f * new Vector3(Random.value, Random.value, Random.value));
-            }
+            child.gameObject.SetActive(true);
+            Rigidbody rb = child.AddComponent<Rigidbody>();
+            rb.AddForce(100f * new Vector3(Random.value, Random.value, Random.value));
         }
     }
 }

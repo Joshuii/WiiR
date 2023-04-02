@@ -19,6 +19,7 @@ public class Bullet : MonoBehaviour
         Debug.Log("hit");
         if (collision.collider.TryGetComponent(out Glass glass))
         {
+            Debug.Log("glass");
             glass.Shatter();
         }
         Destroy(gameObject);
