@@ -13,6 +13,9 @@ public class ObstacleMovement : MonoBehaviour
     [SerializeField]
     float CycleSeconds;
 
+    [SerializeField]
+    float CycleDelaySeconds;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -22,7 +25,7 @@ public class ObstacleMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Vector2 newPos = Vector3.Lerp(FromPosition, ToPosition, (Mathf.Sin((Time.timeSinceLevelLoad / CycleSeconds) * Mathf.PI) / 2) + 0.5f);
+        Vector2 newPos = Vector3.Lerp(FromPosition, ToPosition, (Mathf.Sin(((Time.timeSinceLevelLoad - CycleDelaySeconds) / CycleSeconds) * Mathf.PI) / 2) + 0.5f);
         transform.localPosition = new Vector3(newPos.x, newPos.y, transform.localPosition.z);
     }
 }
