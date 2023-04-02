@@ -118,27 +118,6 @@ public class AnaglyphCamera : MonoBehaviour
         transformation[3, 2] = 0;
         transformation[3, 3] = 1;
 
-        Matrix4x4 camera = new();
-        camera[0, 0] = 1;
-        camera[0, 1] = 0;
-        camera[0, 2] = 0;
-        camera[0, 3] = 0;
-
-        camera[1, 0] = 0;
-        camera[1, 1] = 1;
-        camera[1, 2] = 0;
-        camera[1, 3] = 0;
-
-        camera[2, 0] = 0;
-        camera[2, 1] = 0;
-        camera[2, 2] = 1;
-        camera[2, 3] = 0;
-
-        camera[3, 0] = -Camera.transform.position.x;
-        camera[3, 1] = -Camera.transform.position.y;
-        camera[3, 2] = -Camera.transform.position.z;
-        camera[3, 3] = 1;
-
         Camera.worldToCameraMatrix =
             transformation *
             Matrix4x4.Rotate(Quaternion.Inverse(Camera.transform.rotation)) *
