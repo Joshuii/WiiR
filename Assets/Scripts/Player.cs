@@ -117,7 +117,6 @@ public class Player : MonoBehaviour
 
         if (connectionManager.HandWiimote.Button.a && !aPressed)
         {
-            Debug.Log("fire");
             aPressed = true;
             Instantiate(bulletPrefab, ray.origin, Quaternion.LookRotation(ray.direction));
         }

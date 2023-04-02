@@ -16,10 +16,10 @@ public class Bullet : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
+        Debug.Log("hit");
         if (collision.collider.TryGetComponent(out Glass glass))
         {
-            Debug.Log("Glass");
-            glass.Shatter(collision);
+            glass.Shatter();
         }
         Destroy(gameObject);
     }
