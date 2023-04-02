@@ -55,8 +55,8 @@ Shader "Custom/Wall"
             // Albedo comes from a texture tinted by color
             float position = IN.worldPos.z;
             float grid = pow((position + distance * _LineSpeed) * _LineSpacing % 1, 10);
-            float lineColour = _NearLineColour * (10 - position * 0.1) + _FarLineColour * position * 0.1;
-            float gridColour = _Colour * (1 - grid) + lineColour * grid;
+            float4 lineColour = _NearLineColour * (10 - position * 0.1) + _FarLineColour * position * 0.1;
+            float4 gridColour = _Colour * (1 - grid) + lineColour * grid;
             o.Albedo = gridColour;
 
             // Metallic and smoothness come from slider variables
