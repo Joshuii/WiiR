@@ -22,7 +22,11 @@ public class Player : MonoBehaviour
     [Header("Gun")]
     [SerializeField]
     private RectTransform crosshair;
+    [SerializeField]
+    private GameObject bulletPrefab;
+
     private Vector3 screenPoint;
+    private bool aPressed = false;
 
     public InputAction Move;
 
@@ -41,8 +45,8 @@ public class Player : MonoBehaviour
         //Vector2 headVelocity = input * MovementSpeed * Time.deltaTime;
         //HeadPosition += new Vector3(headVelocity.x, 0, headVelocity.y);
 
-        UpdateGunPosition();
         UpdateHeadPosition();
+        UpdateGun();
         transform.position = new Vector3(-HeadPosition.x, HeadPosition.y, -HeadPosition.z);
     }
 
@@ -71,20 +75,20 @@ public class Player : MonoBehaviour
             Vector2 delta = points[0] - points[1];
             Vector2 centerPoint = (points[0] + points[1]) / 2f;
             float pointDistance = Mathf.Sqrt(delta.sqrMagnitude);
-            //float radiansPerPixel = (Mathf.Deg2Rad * 33f) / 1024f;
+            // float radiansPerPixel = (Mathf.Deg2Rad * 33f) / 1024f;
             float radiansPerPixel = (Mathf.PI / 8f) / 1024f;
             float angle = radiansPerPixel * (pointDistance / 2f);
-            //float sensorBarWidth = 200f;
+            // float sensorBarWidth = 200f;
             float sensorBarWidth = 8.5f * 25.4f;
             HeadPosition.z = HeadMovementSpeed * ((sensorBarWidth / 2f) / Mathf.Tan(angle)) / ScreenHeightMM;
             HeadPosition.x = HeadMovementSpeed * Mathf.Sin(radiansPerPixel * (centerPoint.x - 512f)) * HeadPosition.z;
             float relativeVerticalAngle = (centerPoint.y - 384f) * radiansPerPixel;
             HeadPosition.y = -0.5f + (HeadMovementSpeed * Mathf.Sin(relativeVerticalAngle + (Mathf.Deg2Rad * 10f)) * HeadPosition.z);
-            Debug.Log($"X: {HeadPosition.x}, Y: {HeadPosition.y}, Z: {HeadPosition.z}");
+            // Debug.Log($"X: {HeadPosition.x}, Y: {HeadPosition.y}, Z: {HeadPosition.z}");
         }
     }
 
-    private void UpdateGunPosition()
+    private void UpdateGun()
     {
         if (connectionManager.HandWiimote == null)
         {
@@ -104,9 +108,15 @@ public class Player : MonoBehaviour
         Ray ray = anaglyphCamera.Camera.ScreenPointToRay(screenPoint);
         crosshair.position = screenPoint;
 
-        if (Physics.Raycast(ray, out RaycastHit hit))
+        if (connectionManager.HandWiimote.Button.a && !aPressed)
         {
-            Debug.Log(hit.transform.gameObject.name);
+            Debug.Log("fire");
+            aPressed = true;
+            Instantiate(bulletPrefab, ray.origin, Quaternion.LookRotation(ray.direction));
+        }
+        else if (!connectionManager.HandWiimote.Button.a)
+        {
+            aPressed = false;
         }
     }
 
