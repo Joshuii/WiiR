@@ -85,7 +85,7 @@ public class Player : MonoBehaviour
             Vector2 centerPoint = (points[0] + points[1]) / 2f;
             float pointDistance = Mathf.Sqrt(delta.sqrMagnitude);
             // float radiansPerPixel = (Mathf.Deg2Rad * 33f) / 1024f;
-            float radiansPerPixel = (Mathf.PI / 8f) / 1024f;
+            float radiansPerPixel = (Mathf.PI / 6f) / 1024f;
             float angle = radiansPerPixel * (pointDistance / 2f);
             // float sensorBarWidth = 200f;
             float sensorBarWidth = 8.5f * 25.4f;
@@ -122,7 +122,7 @@ public class Player : MonoBehaviour
             aPressed = true;
             GameObject bullet = Instantiate(bulletPrefab, ray.origin, Quaternion.LookRotation(ray.direction));
 
-            if (Physics.SphereCast(ray, 0.05f, out RaycastHit hit))
+            if (Physics.SphereCast(ray, 0.1f, out RaycastHit hit))
             {
                 float distance = (hit.point - ray.origin).magnitude;
                 Destroy(bullet, distance / bullet.GetComponent<Bullet>().Speed / 5);
