@@ -6,6 +6,8 @@ using WiimoteApi.Util;
 public class Player : MonoBehaviour
 {
     [SerializeField]
+    private GameManager gameManager;
+    [SerializeField]
     private WiimoteConnectionManager connectionManager;
     [SerializeField]
     private AnaglyphCamera anaglyphCamera;
@@ -144,5 +146,10 @@ public class Player : MonoBehaviour
     private void OnDisable()
     {
         Move.Disable();
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        gameManager.StopGame();
     }
 }

@@ -33,10 +33,12 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     GameObject[] Segments;
 
+    public event System.EventHandler OnStopGame; 
+
     // Start is called before the first frame update
     void Start()
     {
-        StartGame();
+
     }
 
     // Update is called once per frame
@@ -81,6 +83,7 @@ public class GameManager : MonoBehaviour
         }
 
         IsStarted = false;
+        OnStopGame?.Invoke(this, System.EventArgs.Empty);
     }
 
     private void GenerateMoreSegments()
