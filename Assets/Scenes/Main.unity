@@ -300,6 +300,7 @@ MonoBehaviour:
   MovementSpeed: 0
   HeadMovementSpeed: 1
   ScreenHeightMM: 326
+  crosshair: {fileID: 2039246987}
   BottomLeft: {fileID: 527213188}
   BottomRight: {fileID: 1813369741}
   TopLeft: {fileID: 1317942473}
@@ -581,7 +582,7 @@ RectTransform:
   m_Children:
   - {fileID: 2039246987}
   m_Father: {fileID: 0}
-  m_RootOrder: 15
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -918,7 +919,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 16
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2039246986
 GameObject:
