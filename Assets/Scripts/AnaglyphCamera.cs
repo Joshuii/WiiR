@@ -4,8 +4,7 @@ using UnityEngine;
 
 public class AnaglyphCamera : MonoBehaviour
 {
-    [SerializeField]
-    private Camera Camera;
+    public Camera Camera;
 
     [Header("Screen")]
     [SerializeField]
@@ -42,13 +41,13 @@ public class AnaglyphCamera : MonoBehaviour
             RenderTexture rightTexture = RenderTexture.GetTemporary(src.descriptor);
 
             // Left eye
-            CalculateProjectionMatrix(Vector3.left * 0.02f, Camera.nearClipPlane, Camera.farClipPlane);
+            CalculateProjectionMatrix(Vector3.left * 0.02f);
             Camera.targetTexture = leftTexture;
             Camera.Render();
             anaglyphMaterial.SetTexture("_LeftTex", leftTexture);
 
             // Right eye
-            CalculateProjectionMatrix(Vector3.right * 0.02f, Camera.nearClipPlane, Camera.farClipPlane);
+            CalculateProjectionMatrix(Vector3.right * 0.02f);
             Camera.targetTexture = rightTexture;
             Camera.Render();
             anaglyphMaterial.SetTexture("_RightTex", rightTexture);
@@ -60,7 +59,7 @@ public class AnaglyphCamera : MonoBehaviour
         else
         {
             RenderTexture texture = RenderTexture.GetTemporary(src.descriptor);
-            CalculateProjectionMatrix(Vector3.zero, Camera.nearClipPlane, Camera.farClipPlane);
+            CalculateProjectionMatrix(Vector3.zero);
             Camera.targetTexture = texture;
             Camera.Render();
             Graphics.Blit(texture, dst);
@@ -68,8 +67,11 @@ public class AnaglyphCamera : MonoBehaviour
         }
     }
 
-    private void CalculateProjectionMatrix(Vector3 offset, float nearDistance, float farDistance)
+    public void CalculateProjectionMatrix(Vector3 offset)
     {
+        float nearDistance = Camera.nearClipPlane;
+        float farDistance = Camera.farClipPlane;
+
         Vector3 eyePosition = Camera.transform.position + offset;
         // Eye to bottom left
         Vector3 va = BottomLeft.position - eyePosition;
@@ -87,8 +89,6 @@ public class AnaglyphCamera : MonoBehaviour
 
         // Distance from the screen to eye
         float eyeDistance = eyePosition.magnitude;
-
-        Debug.Log(eyeDistance);
 
         float left = Vector3.Dot(vr, va) * (nearDistance / eyeDistance);
         float right = Vector3.Dot(vr, vb) * (nearDistance / eyeDistance);
@@ -144,5 +144,14 @@ public class AnaglyphCamera : MonoBehaviour
             Matrix4x4.Rotate(Quaternion.Inverse(Camera.transform.rotation)) *
             Matrix4x4.Translate(-Camera.transform.position);
         Camera.projectionMatrix = projection;
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawLine(BottomLeft.position, BottomRight.position);
+        Gizmos.DrawLine(BottomRight.position, TopRight.position);
+        Gizmos.DrawLine(TopRight.position, TopLeft.position);
+        Gizmos.DrawLine(TopLeft.position, BottomLeft.position);
     }
 }

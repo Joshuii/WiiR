@@ -6,19 +6,23 @@ using WiimoteApi.Util;
 public class Player : MonoBehaviour
 {
     [SerializeField]
-    private Camera Camera;
+    private WiimoteConnectionManager connectionManager;
+    [SerializeField]
+    private AnaglyphCamera anaglyphCamera;
 
     [SerializeField]
     private float MovementSpeed;
 
+    [Header("Head Tracking")]
     [SerializeField]
     private float HeadMovementSpeed = 1f;
-
     [SerializeField]
     private float ScreenHeightMM = 195f;
 
+    [Header("Gun")]
     [SerializeField]
-    private WiimoteConnectionManager ConnectionManager;
+    private RectTransform crosshair;
+    private Vector3 screenPoint;
 
     [Header("Screen")]
     [SerializeField]
@@ -47,19 +51,20 @@ public class Player : MonoBehaviour
         //Vector2 headVelocity = input * MovementSpeed * Time.deltaTime;
         //HeadPosition += new Vector3(headVelocity.x, 0, headVelocity.y);
 
+        UpdateGunPosition();
         UpdateHeadPosition();
         transform.position = new Vector3(-HeadPosition.x, HeadPosition.y, -HeadPosition.z);
     }
 
     private void UpdateHeadPosition()
     {
-        if (ConnectionManager.HeadWiimote == null)
+        if (connectionManager.HeadWiimote == null)
         {
             return;
         }
 
         List<Vector2> points = new();
-        ReadOnlyMatrix<int> ir = ConnectionManager.HeadWiimote.Ir.ir;
+        ReadOnlyMatrix<int> ir = connectionManager.HeadWiimote.Ir.ir;
 
         // Read LED points from Wiimote IR camera
         for (int i = 0; i < 4; i++)
@@ -89,95 +94,30 @@ public class Player : MonoBehaviour
         }
     }
 
-    private void LateUpdate()
+    private void UpdateGunPosition()
     {
-        //CalculateProjectionMatrix(Camera.nearClipPlane, Camera.farClipPlane);
-    }
+        if (connectionManager.HandWiimote == null)
+        {
+            return;
+        }
 
-    private void CalculateProjectionMatrix(float nearDistance, float farDistance)
-    {
-        // Eye to bottom left
-        Vector3 va = BottomLeft.position - Camera.transform.position;
-        // Eye to bottom right
-        Vector3 vb = BottomRight.position - Camera.transform.position;
-        // Eye to top left
-        Vector3 vc = TopLeft.position - Camera.transform.position;
+        float[] coordinates = connectionManager.HandWiimote.Ir.GetPointingPosition();
+        Vector2 pointerPosition = new(coordinates[0], coordinates[1]);
 
-        // Right screen vector
-        Vector3 vr = (BottomRight.position - BottomLeft.position).normalized;
-        // Up screen vector
-        Vector3 vu = (TopLeft.position - BottomLeft.position).normalized;
-        // Normal screen vector
-        Vector3 vn = -Vector3.Cross(vr, vu).normalized;
+        if (pointerPosition == Vector2.zero)
+        {
+            return;
+        }
 
-        // Distance from the screen to eye
-        float eyeDistance = Camera.transform.position.magnitude;
+        anaglyphCamera.CalculateProjectionMatrix(Vector3.zero);
+        screenPoint = Vector3.Lerp(screenPoint, anaglyphCamera.Camera.ViewportToScreenPoint(pointerPosition), 0.5f);
+        Ray ray = anaglyphCamera.Camera.ScreenPointToRay(screenPoint);
+        crosshair.position = screenPoint;
 
-        Debug.Log(eyeDistance);
-
-        float left = Vector3.Dot(vr, va) * (nearDistance / eyeDistance);
-        float right = Vector3.Dot(vr, vb) * (nearDistance / eyeDistance);
-        float bottom = Vector3.Dot(vu, va) * (nearDistance / eyeDistance);
-        float top = Vector3.Dot(vu, vc) * (nearDistance / eyeDistance);
-
-        Matrix4x4 projection = Matrix4x4.Frustum(left, right, bottom, top, nearDistance, farDistance);
-
-        Matrix4x4 transformation = new();
-        transformation[0, 0] = vr.x;
-        transformation[0, 1] = vr.y;
-        transformation[0, 2] = vr.z;
-        transformation[0, 3] = 0;
-
-        transformation[1, 0] = vu.x;
-        transformation[1, 1] = vu.y;
-        transformation[1, 2] = vu.z;
-        transformation[1, 3] = 0;
-
-        transformation[2, 0] = vn.x;
-        transformation[2, 1] = vn.y;
-        transformation[2, 2] = vn.z;
-        transformation[2, 3] = 0;
-
-        transformation[3, 0] = 0;
-        transformation[3, 1] = 0;
-        transformation[3, 2] = 0;
-        transformation[3, 3] = 1;
-
-        Matrix4x4 camera = new();
-        camera[0, 0] = 1;
-        camera[0, 1] = 0;
-        camera[0, 2] = 0;
-        camera[0, 3] = 0;
-
-        camera[1, 0] = 0;
-        camera[1, 1] = 1;
-        camera[1, 2] = 0;
-        camera[1, 3] = 0;
-
-        camera[2, 0] = 0;
-        camera[2, 1] = 0;
-        camera[2, 2] = 1;
-        camera[2, 3] = 0;
-
-        camera[3, 0] = -Camera.transform.position.x;
-        camera[3, 1] = -Camera.transform.position.y;
-        camera[3, 2] = -Camera.transform.position.z;
-        camera[3, 3] = 1;
-
-        Camera.worldToCameraMatrix =
-            transformation *
-            Matrix4x4.Rotate(Quaternion.Inverse(Camera.transform.rotation)) *
-            Matrix4x4.Translate(-Camera.transform.position);
-        Camera.projectionMatrix = projection;
-    }
-
-    private void OnDrawGizmos()
-    {
-        Gizmos.color = Color.red;
-        Gizmos.DrawLine(BottomLeft.position, BottomRight.position);
-        Gizmos.DrawLine(BottomRight.position, TopRight.position);
-        Gizmos.DrawLine(TopRight.position, TopLeft.position);
-        Gizmos.DrawLine(TopLeft.position, BottomLeft.position);
+        if (Physics.Raycast(ray, out RaycastHit hit))
+        {
+            Debug.Log(hit.transform.gameObject.name);
+        }
     }
 
     private void OnEnable()
