@@ -701,11 +701,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ede635c860034d0409e955fc3dbf7c35, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  InitialSpeed: 100
-  SpeedIncreasePerSecond: 0
+  InitialSpeed: 20
+  SpeedIncreasePerSecond: 0.5
   SegmentLoadDistance: 2000
-  LengthPerSegment: 400
-  GapBetweenSegments: 200
+  LengthPerSegment: 200
+  GapBetweenSegments: 100
   Segments:
   - {fileID: 9143709877199262168, guid: 279832c7779ed9a4185093d16973f74f, type: 3}
 --- !u!1 &989408891
