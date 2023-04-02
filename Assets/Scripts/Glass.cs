@@ -17,23 +17,15 @@ public class Glass : MonoBehaviour
         
     }
 
-    public void Shatter(Collision collision)
+    public void Shatter()
     {
+        GetComponent<BoxCollider>().enabled = false;
+
         foreach (Transform child in transform)
         {
-            if (child.gameObject.activeSelf)
-            {
-                child.gameObject.SetActive(false);
-            }
-            else
-            {
-                child.gameObject.SetActive(true);
-                Debug.Log(child.name);
-                Rigidbody rb = child.AddComponent<Rigidbody>();
-                rb.AddForce(100f * new Vector3(Random.value, Random.value, Random.value));
-                Destroy(child.gameObject, 1f);
-            }
-
+            child.gameObject.SetActive(true);
+            Rigidbody rb = child.AddComponent<Rigidbody>();
+            rb.AddForce(100f * new Vector3(Random.value, Random.value, Random.value));
         }
     }
 }
