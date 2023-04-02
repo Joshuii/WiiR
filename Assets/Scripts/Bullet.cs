@@ -6,21 +6,16 @@ using UnityEngine;
 public class Bullet : MonoBehaviour
 {
     [SerializeField]
-    private float speed;
+    public float Speed;
 
     void Start()
     {
-        GetComponent<Rigidbody>().velocity = transform.TransformDirection(new Vector3(0, 0, speed));
+        GetComponent<Rigidbody>().velocity = transform.TransformDirection(new Vector3(0, 0, Speed));
         Destroy(gameObject, 5f);
     }
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.collider.TryGetComponent(out Glass glass))
-        {
-            Debug.Log("Glass");
-            glass.Shatter(collision);
-        }
         Destroy(gameObject);
     }
 }
