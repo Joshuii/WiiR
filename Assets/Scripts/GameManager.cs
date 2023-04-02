@@ -45,6 +45,7 @@ public class GameManager : MonoBehaviour
             Speed += SpeedIncreasePerSecond * Time.deltaTime;
             GenerateMoreSegments();
             UpdateSegmentVelocitys();
+            DestroyOldSegments();
         }
     }
 
@@ -70,6 +71,11 @@ public class GameManager : MonoBehaviour
             return;
         }
 
+        foreach (Segment segment in liveSegments)
+        {
+            Destroy(segment.GameObject);
+        }
+
         IsStarted = false;
     }
 
@@ -88,6 +94,15 @@ public class GameManager : MonoBehaviour
         foreach (Segment segment in liveSegments)
         {
             segment.UpdatePosition(Distance);
+        }
+    }
+
+    private void DestroyOldSegments()
+    {
+        while (liveSegments.Count > 0 && liveSegments[0].Distance < Distance - LengthPerSegment - GapBetweenSegments)
+        {
+            Destroy(liveSegments[0].GameObject);
+            liveSegments.RemoveAt(0);
         }
     }
 
