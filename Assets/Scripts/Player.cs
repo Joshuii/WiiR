@@ -118,7 +118,17 @@ public class Player : MonoBehaviour
         if (connectionManager.HandWiimote.Button.a && !aPressed)
         {
             aPressed = true;
-            Instantiate(bulletPrefab, ray.origin, Quaternion.LookRotation(ray.direction));
+            GameObject bullet = Instantiate(bulletPrefab, ray.origin, Quaternion.LookRotation(ray.direction));
+
+            if (Physics.Raycast(ray, out RaycastHit hit))
+            {
+                float distance = (hit.point - ray.origin).magnitude;
+                Destroy(bullet, distance / bullet.GetComponent<Bullet>().Speed / 5);
+                if (hit.transform.TryGetComponent(out Glass glass))
+                {
+                    glass.Shatter();
+                }
+            }
         }
         else if (!connectionManager.HandWiimote.Button.a)
         {
