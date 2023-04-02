@@ -122,10 +122,11 @@ public class Player : MonoBehaviour
             aPressed = true;
             GameObject bullet = Instantiate(bulletPrefab, ray.origin, Quaternion.LookRotation(ray.direction));
 
-            if (Physics.Raycast(ray, out RaycastHit hit))
+            if (Physics.SphereCast(ray, 0.05f, out RaycastHit hit))
             {
                 float distance = (hit.point - ray.origin).magnitude;
                 Destroy(bullet, distance / bullet.GetComponent<Bullet>().Speed / 5);
+
                 if (hit.transform.TryGetComponent(out Glass glass))
                 {
                     glass.Shatter();
