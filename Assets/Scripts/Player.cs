@@ -24,16 +24,6 @@ public class Player : MonoBehaviour
     private RectTransform crosshair;
     private Vector3 screenPoint;
 
-    [Header("Screen")]
-    [SerializeField]
-    private Transform BottomLeft;
-    [SerializeField]
-    private Transform BottomRight;
-    [SerializeField]
-    private Transform TopLeft;
-    [SerializeField]
-    private Transform TopRight;
-
     public InputAction Move;
 
     private Vector3 HeadPosition = Vector3.up;
