@@ -28,6 +28,9 @@ public class GameManager : MonoBehaviour
     float GapBetweenSegments;
 
     [SerializeField]
+    float MaxSpeed;
+
+    [SerializeField]
     GameObject[] Segments;
 
     // Start is called before the first frame update
@@ -43,6 +46,7 @@ public class GameManager : MonoBehaviour
         {
             Distance += Speed * Time.deltaTime;
             Speed += SpeedIncreasePerSecond * Time.deltaTime;
+            Speed = Mathf.Min(Speed, MaxSpeed);
             GenerateMoreSegments();
             UpdateSegmentVelocitys();
             DestroyOldSegments();
