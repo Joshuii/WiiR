@@ -115,7 +115,7 @@ public class Player : MonoBehaviour
             return;
         }
 
-        anaglyphCamera.CalculateProjectionMatrix(Vector3.left * 0.1f);
+        anaglyphCamera.CalculateProjectionMatrix(Vector3.zero * 0.1f);
         screenPoint = Vector3.Lerp(screenPoint, anaglyphCamera.Camera.ViewportToScreenPoint(pointerPosition), 0.9f);
         Ray ray = anaglyphCamera.Camera.ScreenPointToRay(screenPoint);
         crosshair.position = screenPoint;
@@ -127,12 +127,12 @@ public class Player : MonoBehaviour
 
             if (Physics.SphereCast(ray, 0.1f, out RaycastHit hit))
             {
-                glassSmash.Play();
                 float distance = (hit.point - ray.origin).magnitude;
                 Destroy(bullet, distance / bullet.GetComponent<Bullet>().Speed / 5);
 
                 if (hit.transform.TryGetComponent(out Glass glass))
                 {
+                    glassSmash.Play();
                     glass.Shatter();
                 }
             }
